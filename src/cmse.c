@@ -3,6 +3,7 @@
  */
 
 #include "common.h"
+#include "decrypt.h"
 #include "encrypt.h"
 
 #include <openssl/cms.h>
@@ -105,21 +106,7 @@ int main(int argc, char **argv)
     if(encrypt) {
         ret = encrypt_cms(in, out, opt_password);
     } else if(decrypt) {
-        cms = d2i_CMS_bio(in, NULL);
-        // CMS_decrypt(cms, NULL, NULL, NULL, NULL, flags);
-
-        if (opt_password) {
-            unsigned char *tmp = (unsigned char *)BUF_strdup((char *)opt_password);
-            if (!CMS_decrypt_set1_password(cms, tmp, -1)) {
-                goto end;
-            }
-        }
-        
-        if (!CMS_decrypt(cms, NULL, NULL, NULL, out, flags)) {
-            goto end;
-        }
-
-        ret = 0;
+        ret = decrypt_cms(in, out, opt_password);
     }
 
  end:
