@@ -86,3 +86,48 @@ X509 *load_x509(BIO *err, const char *file)
     }
     return x;
 }
+
+EVP_PKEY *load_key(BIO *err, const char *file, ENGINE *e)
+{
+    BIO *key = NULL;
+    EVP_PKEY *pkey = NULL;
+
+    if (file == NULL) {
+        BIO_printf(err, "no keyfile specified\n");
+        goto end;
+    }
+
+    if (e) {
+        pkey = ENGINE_load_private_key(e, file, NULL, NULL);
+        if (!pkey) {
+            BIO_printf(err, "cannot load %s from engine\n", file);
+            ERR_print_errors(err);
+        }
+        goto end;
+    }
+
+    key = BIO_new(BIO_s_file());
+    if (key == NULL) {
+        ERR_print_errors(err);
+        goto end;
+    }
+    if (file == NULL) {
+        BIO_set_fp(key, stdin, BIO_NOCLOSE);
+    } else if (BIO_read_filename(key, file) <= 0) {
+        BIO_printf(err, "Error opening %s\n", file);
+        ERR_print_errors(err);
+        goto end;
+    }
+
+    pkey = PEM_read_bio_PrivateKey(key, NULL, NULL, NULL);
+
+ end:
+    if (key != NULL) {
+        BIO_free(key);
+    }
+    if (pkey == NULL) {
+        BIO_printf(err, "unable to load %s\n", file);
+        ERR_print_errors(err);
+    }
+    return (pkey);
+}
