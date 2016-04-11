@@ -26,10 +26,10 @@ static const struct option options[] = {
 
 static const char *option_help[] = {
     "Print this help and exit",
-    "Decrypt",
-    "Encrypt",
-    "Output",
-    "Password",
+    "Decrypt file",
+    "Encrypt file",
+    "Output file",
+    "Password used to encrypt",
     "Display additional information",
 };
 
