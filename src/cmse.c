@@ -3,11 +3,10 @@
  */
 
 #include "common.h"
+#include "encrypt.h"
 
 #include <openssl/cms.h>
 #include <openssl/asn1t.h>
-
-#define PKCS5_ITERATIONS 4096
 
 static char *app_name = "cmse";
 
@@ -104,19 +103,7 @@ int main(int argc, char **argv)
     }
 
     if(encrypt) {
-        const EVP_CIPHER *cipher = EVP_aes_256_cbc();
-        const EVP_CIPHER *wrap = EVP_aes_256_cbc();
-        cms = CMS_encrypt(NULL, NULL, cipher, CMS_PARTIAL);
-
-        if (opt_password) {
-            unsigned char *tmp = (unsigned char *)BUF_strdup((char *)opt_password);
-            if (tmp == NULL || CMS_add0_recipient_password(cms, PKCS5_ITERATIONS, NID_id_alg_PWRI_KEK,
-                                                           NID_id_pbkdf2, tmp, -1, wrap) == 0) {
-                goto end;
-            }
-        }
-
-        ret = i2d_CMS_bio_stream(out, cms, in, flags);
+        ret = encrypt_cms(in, out, opt_password);
     } else if(decrypt) {
         cms = d2i_CMS_bio(in, NULL);
         // CMS_decrypt(cms, NULL, NULL, NULL, NULL, flags);
