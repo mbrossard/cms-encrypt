@@ -5,7 +5,8 @@
 #include "config.h"
 #include "common.h"
 
-#include <openssl/evp.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
 
 void init_crypto()
 {
@@ -51,4 +52,37 @@ void print_usage_and_die(const char *name, const struct option *opts, const char
         i++;
     }
     exit(2);
+}
+
+X509 *load_x509(BIO *err, const char *file)
+{
+    X509 *x = NULL;
+    BIO *bin;
+
+    if ((bin = BIO_new(BIO_s_file())) == NULL) {
+        ERR_print_errors(err);
+        goto end;
+    }
+
+    if (file == NULL) {
+        BIO_set_fp(bin, stdin, BIO_NOCLOSE);
+    } else {
+        if (BIO_read_filename(bin, file) <= 0) {
+            BIO_printf(err, "Error opening %s\n", file);
+            ERR_print_errors(err);
+            goto end;
+        }
+    }
+
+    x = PEM_read_bio_X509_AUX(bin, NULL, NULL, NULL);
+
+ end:
+    if (x == NULL) {
+        BIO_printf(err, "unable to load certificate\n");
+        ERR_print_errors(err);
+    }
+    if (bin != NULL) {
+        BIO_free(bin);
+    }
+    return x;
 }
