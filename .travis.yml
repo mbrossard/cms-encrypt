@@ -1,0 +1,31 @@
+language: c
+sudo: false
+
+branches:
+  only:
+    - master
+
+cache: apt
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc-5
+    addons:
+      apt:
+        packages: [ "gcc-5" ]
+        sources: &sources
+          - ubuntu-toolchain-r-test
+  - os: osx
+    compiler: clang
+    osx_image: xcode7.2
+
+before_install:
+  - if [ $TRAVIS_OS_NAME == osx ] ; then brew install openssl || true ; fi
+
+script:
+  - autoreconf -i
+  - if [ $TRAVIS_OS_NAME == osx ] ; then ./configure --with-openssl=/usr/local/Cellar/openssl/* ; fi
+  - if [ $TRAVIS_OS_NAME == linux ] ; then ./configure ; fi
+  - make V=1
+
