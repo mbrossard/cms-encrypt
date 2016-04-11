@@ -12,6 +12,7 @@ static const struct option options[] = {
     { "help",               0, 0,           'h' },
     { "decrypt",            1, 0,           'd' },
     { "encrypt",            1, 0,           'e' },
+    { "key",                1, 0,           'k' },
     { "output",             1, 0,           'o' },
     { "password",           1, 0,           'p' },
     { "recipient",          1, 0,           'r' },
@@ -23,6 +24,7 @@ static const char *option_help[] = {
     "Print this help and exit",
     "Decrypt file",
     "Encrypt file",
+    "Key to decrypt file",
     "Output file",
     "Password used to encrypt",
     "Recipient certificate",
@@ -33,16 +35,18 @@ int main(int argc, char **argv)
 {
     char *opt_input = NULL,
         *opt_output = NULL,
+        *opt_key = NULL,
         *opt_password = NULL;
     int long_optind = 0, ret = 1;
     int encrypt = 0, decrypt = 0, verbose = 0;
     STACK_OF(X509) *crts = sk_X509_new_null();
     X509 *x509 = NULL;
+    EVP_PKEY *key = NULL;
 
     init_crypto();
 
     while (1) {
-        char c = getopt_long(argc, argv, "d:e:ho:p:r:v",
+        char c = getopt_long(argc, argv, "d:e:hk:o:p:r:v",
                              options, &long_optind);
         if (c == -1)
             break;
@@ -54,6 +58,9 @@ int main(int argc, char **argv)
             case 'e':
                 encrypt = 1;
                 opt_input = optarg;
+                break;
+            case 'k':
+                opt_key = optarg;
                 break;
             case 'o':
                 opt_output = optarg;
@@ -74,6 +81,10 @@ int main(int argc, char **argv)
             default:
                 print_usage_and_die(app_name, options, option_help);
         }
+    }
+
+    if(opt_key) {
+        key = load_key(NULL, opt_key, NULL);
     }
 
     BIO *in = NULL, *out = NULL;
