@@ -4,10 +4,7 @@
 
 #include "common.h"
 
-#include <openssl/bio.h>
 #include <openssl/cms.h>
-#include <openssl/pem.h>
-#include <openssl/evp.h>
 #include <openssl/asn1t.h>
 
 #define PKCS5_ITERATIONS 4096
