@@ -6,12 +6,13 @@
 #define ENCRYPT_H
 
 #include <openssl/bio.h>
+#include <openssl/x509.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int encrypt(BIO *in, BIO *out, char *password);
+int encrypt_cms(BIO *in, BIO *out, char *password, STACK_OF(X509) *crts);
 
 #ifdef __cplusplus
 };

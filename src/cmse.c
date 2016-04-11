@@ -88,7 +88,7 @@ int main(int argc, char **argv)
     }
 
     if(encrypt) {
-        ret = encrypt_cms(in, out, opt_password);
+        ret = encrypt_cms(in, out, opt_password, crts);
     } else if(decrypt) {
         ret = decrypt_cms(in, out, opt_password);
     }
