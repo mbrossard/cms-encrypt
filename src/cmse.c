@@ -6,9 +6,6 @@
 #include "decrypt.h"
 #include "encrypt.h"
 
-#include <openssl/cms.h>
-#include <openssl/asn1t.h>
-
 static char *app_name = "cmse";
 
 static const struct option options[] = {
@@ -90,8 +87,6 @@ int main(int argc, char **argv)
         }
     }
 
-    int flags = CMS_PARTIAL | CMS_STREAM | CMS_BINARY;
-    CMS_ContentInfo *cms;
     BIO *in = NULL, *out = NULL;
 
     in = BIO_new_file(opt_input, "rb");
@@ -109,6 +104,5 @@ int main(int argc, char **argv)
         ret = decrypt_cms(in, out, opt_password);
     }
 
- end:
     return ret;
 }
