@@ -14,6 +14,7 @@ static const struct option options[] = {
     { "encrypt",            1, 0,           'e' },
     { "output",             1, 0,           'o' },
     { "password",           1, 0,           'p' },
+    { "recipient",          1, 0,           'r' },
     { "verbose",            0, 0,           'v' },
     { 0, 0, 0, 0 }
 };
@@ -24,6 +25,7 @@ static const char *option_help[] = {
     "Encrypt file",
     "Output file",
     "Password used to encrypt",
+    "Recipient certificate",
     "Display additional information",
 };
 
@@ -34,11 +36,13 @@ int main(int argc, char **argv)
         *opt_password = NULL;
     int long_optind = 0, ret = 1;
     int encrypt = 0, decrypt = 0, verbose = 0;
+    STACK_OF(X509) *crts = sk_X509_new_null();
+    X509 *x509 = NULL;
 
     init_crypto();
 
     while (1) {
-        char c = getopt_long(argc, argv, "d:e:ho:p:v",
+        char c = getopt_long(argc, argv, "d:e:ho:p:r:v",
                              options, &long_optind);
         if (c == -1)
             break;
@@ -56,6 +60,12 @@ int main(int argc, char **argv)
                 break;
             case 'p':
                 opt_password = optarg;
+                break;
+            case 'r':
+                x509 = load_x509(NULL, optarg);
+                if(x509) {
+                    sk_X509_push(crts, x509);
+                }
                 break;
             case 'v':
                 verbose += 1;
