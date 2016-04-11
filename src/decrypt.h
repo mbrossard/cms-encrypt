@@ -6,12 +6,14 @@
 #define DECRYPT_H
 
 #include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <openssl/x509.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int decrypt_cms(BIO *in, BIO *out, char *password);
+int decrypt_cms(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key);
 
 #ifdef __cplusplus
 };
