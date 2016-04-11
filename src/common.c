@@ -54,6 +54,27 @@ void print_usage_and_die(const char *name, const struct option *opts, const char
     exit(2);
 }
 
+unsigned int read_length(BIO *in)
+{
+    unsigned int l = 0, i, j;
+    unsigned char c;
+
+    BIO_read(in, (char *)&c, 1);
+    if(c <= 127) {
+        l = c;
+    } else {
+        j = c - 128;
+        /* This probably should be limited to 32 bits... */
+        for(i = 0; i < j; i++) {
+            BIO_read(in, (char *)&c, 1);
+            l = l << 8;
+            l |= c;
+        }
+    }
+
+    return l;
+}
+
 X509 *load_x509(BIO *err, const char *file)
 {
     X509 *x = NULL;

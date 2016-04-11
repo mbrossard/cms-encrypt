@@ -27,27 +27,6 @@ static const char *option_help[] = {
     "Display additional information",
 };
 
-unsigned int read_length(BIO *in)
-{
-    unsigned int l = 0, i, j;
-    unsigned char c;
-
-    BIO_read(in, (char *)&c, 1);
-    if(c <= 127) {
-        l = c;
-    } else {
-        j = c - 128;
-        /* Ugly kludge to 32 bits... */
-        for(i = 0; i < j; i++) {
-            BIO_read(in, (char *)&c, 1);
-            l = l << 8;
-            l |= c;
-        }
-    }
-
-    return l;
-}
-
 int main(int argc, char **argv)
 {
     char *opt_input = NULL,
