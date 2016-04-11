@@ -30,6 +30,7 @@ bin_PROGRAMS = cmse
 cmse_SOURCES = \
 	src/cmse.c \
 	src/common.c \
+	src/decrypt.c \
 	src/encrypt.c
 
 cmse_LDFLAGS = @OPENSSL_LDFLAGS@
