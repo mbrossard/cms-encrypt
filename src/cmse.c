@@ -85,7 +85,7 @@ int main(int argc, char **argv)
                 opt_password = optarg;
                 break;
             case 'v':
-                verbose = 1;
+                verbose += 1;
                 break;
             case 'h':
             default:
