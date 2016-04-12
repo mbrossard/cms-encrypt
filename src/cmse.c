@@ -116,6 +116,10 @@ int main(int argc, char **argv)
         }
         ret = encrypt_cms(in, out, opt_password, crts);
     } else if(decrypt) {
+        if(opt_password == NULL && (opt_key == NULL || sk_X509_num(crts) == 0)) {
+            fprintf(stderr, "You must specify either --password/-p or --recipient/-r and --key/-k\n");
+            goto end;
+        }
         ret = decrypt_cms(in, out, opt_password, x509, key);
     }
 
