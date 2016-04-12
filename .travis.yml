@@ -20,4 +20,4 @@ script:
   - autoreconf -i
   - if [ $TRAVIS_OS_NAME == osx ] ; then ./configure --with-openssl=/usr/local/Cellar/openssl/* ; fi
   - make V=1
-
+  - make test
