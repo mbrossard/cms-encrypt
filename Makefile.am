@@ -46,10 +46,10 @@ test: cmse
 	if ! [ -f rsa2.pem -a -f crt2.pem ] ; then \
 		@OPENSSL_BIN@ req -new -x509 -newkey rsa:1024 -keyout rsa2.pem -out crt2.pem -subj /CN=Bar -set_serial 2 -nodes ; \
 	fi
-	./cmse -e $(CLEAR) -o test.enc -r crt1.pem -r crt2.pem -p $(PWD)
-	./cmse -d test.enc -o test.dec1 -r crt1.pem -k rsa1.pem
+	./cmse -e -i $(CLEAR) -o test.enc  -r crt1.pem -r crt2.pem -p $(PWD)
+	./cmse -d -i test.enc -o test.dec1 -r crt1.pem -k rsa1.pem
 	cmp $(CLEAR) test.dec1
-	./cmse -d test.enc -o test.dec2 -r crt2.pem -k rsa2.pem
+	./cmse -d -r crt2.pem -k rsa2.pem < test.enc > test.dec2 
 	cmp $(CLEAR) test.dec2
-	./cmse -d test.enc -o test.dec3 -p $(PWD)
+	./cmse -d -i test.enc -o test.dec3 -p $(PWD)
 	cmp $(CLEAR) test.dec3
