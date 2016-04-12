@@ -77,6 +77,9 @@ int main(int argc, char **argv)
                 x509 = load_x509(NULL, optarg);
                 if(x509) {
                     sk_X509_push(crts, x509);
+                } else {
+                    fprintf(stderr, "Error loading certificate '%s'\n", optarg);
+                    goto end;
                 }
                 break;
             case 'v':
