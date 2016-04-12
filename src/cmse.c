@@ -10,12 +10,13 @@ static char *app_name = "cmse";
 
 static const struct option options[] = {
     { "help",               0, 0,           'h' },
-    { "decrypt",            1, 0,           'd' },
-    { "encrypt",            1, 0,           'e' },
-    { "key",                1, 0,           'k' },
+    { "decrypt",            0, 0,           'd' },
+    { "encrypt",            0, 0,           'e' },
+    { "input",              1, 0,           'i' },
     { "output",             1, 0,           'o' },
     { "password",           1, 0,           'p' },
     { "recipient",          1, 0,           'r' },
+    { "key",                1, 0,           'k' },
     { "verbose",            0, 0,           'v' },
     { 0, 0, 0, 0 }
 };
@@ -24,10 +25,11 @@ static const char *option_help[] = {
     "Print this help and exit",
     "Decrypt file",
     "Encrypt file",
-    "Key to decrypt file",
-    "Output file",
+    "Input file (default stdin)",
+    "Output file  (default stdout)",
     "Password used to encrypt",
     "Recipient certificate",
+    "Key to decrypt file",
     "Display additional information",
 };
 
@@ -42,21 +44,24 @@ int main(int argc, char **argv)
     STACK_OF(X509) *crts = sk_X509_new_null();
     X509 *x509 = NULL;
     EVP_PKEY *key = NULL;
+    BIO *in = NULL, *out = NULL;
 
     init_crypto();
 
     while (1) {
-        char c = getopt_long(argc, argv, "d:e:hk:o:p:r:v",
+        char c = getopt_long(argc, argv, "dehi:k:o:p:r:v",
                              options, &long_optind);
         if (c == -1)
             break;
         switch (c) {
             case 'd':
                 decrypt = 1;
-                opt_input = optarg;
+                break;
                 break;
             case 'e':
                 encrypt = 1;
+                break;
+            case 'i':
                 opt_input = optarg;
                 break;
             case 'k':
@@ -87,10 +92,11 @@ int main(int argc, char **argv)
         key = load_key(NULL, opt_key, NULL);
     }
 
-    BIO *in = NULL, *out = NULL;
-
-    in = BIO_new_file(opt_input, "rb");
-    // in = BIO_new_fp(stdin, BIO_NOCLOSE);
+    if(opt_input) {
+        in = BIO_new_file(opt_input, "rb");
+    } else {
+        in = BIO_new_fp(stdin, BIO_NOCLOSE);
+    }
 
     if(opt_output) {
         out = BIO_new_file(opt_output, "wb");
