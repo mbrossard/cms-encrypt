@@ -30,8 +30,11 @@ int encrypt_cms(BIO *in, BIO *out, char *password, STACK_OF(X509) *crts)
         }
     }
 
-    ret = i2d_CMS_bio_stream(out, cms, in, flags);
+    if(i2d_CMS_bio_stream(out, cms, in, flags) <= 0) {
+        goto end;
+    }
 
+    ret = 0;
  end:
     return ret;
 }
