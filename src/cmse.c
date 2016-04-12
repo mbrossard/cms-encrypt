@@ -88,6 +88,11 @@ int main(int argc, char **argv)
         }
     }
 
+    if(encrypt == 0 && decrypt == 0) {
+        fprintf(stderr, "You must specify either --encrypt/-e or --decrypt/-d\n");
+        goto end;
+    }
+
     if(opt_key) {
         key = load_key(NULL, opt_key, NULL);
     }
@@ -110,5 +115,6 @@ int main(int argc, char **argv)
         ret = decrypt_cms(in, out, opt_password, x509, key);
     }
 
+ end:
     return ret;
 }
