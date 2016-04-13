@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     STACK_OF(X509) *crts = sk_X509_new_null();
     X509 *x509 = NULL;
     EVP_PKEY *key = NULL;
-    BIO *in = NULL, *out = NULL;
+    BIO *in = NULL, *out = NULL, *err = NULL;
 
     init_crypto();
 
@@ -96,6 +96,7 @@ int main(int argc, char **argv)
         goto end;
     }
 
+    err = BIO_new_fp(stderr, BIO_NOCLOSE);
     if(opt_key) {
         key = load_key(NULL, opt_key, NULL);
     }
