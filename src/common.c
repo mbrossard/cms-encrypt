@@ -108,7 +108,6 @@ X509 *load_x509(BIO *err, const char *file)
     return x;
 }
 
-EVP_PKEY *load_key(BIO *err, const char *file, ENGINE *e)
 ENGINE *load_engine(BIO *err, const char *engine, int debug)
 {
     ENGINE *e = NULL;
@@ -155,6 +154,7 @@ ENGINE *load_engine(BIO *err, const char *engine, int debug)
     return e;
 }
 
+EVP_PKEY *load_key(BIO *err, const char *file, ENGINE *engine)
 {
     BIO *key = NULL;
     EVP_PKEY *pkey = NULL;
@@ -164,8 +164,8 @@ ENGINE *load_engine(BIO *err, const char *engine, int debug)
         goto end;
     }
 
-    if (e) {
-        pkey = ENGINE_load_private_key(e, file, NULL, NULL);
+    if (engine) {
+        pkey = ENGINE_load_private_key(engine, file, NULL, NULL);
         if (!pkey) {
             BIO_printf(err, "cannot load %s from engine\n", file);
             ERR_print_errors(err);
