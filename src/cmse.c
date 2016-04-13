@@ -12,6 +12,7 @@ static const struct option options[] = {
     { "help",               0, 0,           'h' },
     { "decrypt",            0, 0,           'd' },
     { "encrypt",            0, 0,           'e' },
+    { "engine",             1, 0,           'E' },
     { "input",              1, 0,           'i' },
     { "output",             1, 0,           'o' },
     { "password",           1, 0,           'p' },
@@ -38,6 +39,7 @@ int main(int argc, char **argv)
     char *opt_input = NULL,
         *opt_output = NULL,
         *opt_key = NULL,
+        *opt_engine = NULL,
         *opt_password = NULL;
     int long_optind = 0, ret = 1;
     int encrypt = 0, decrypt = 0, verbose = 0;
@@ -45,11 +47,12 @@ int main(int argc, char **argv)
     X509 *x509 = NULL;
     EVP_PKEY *key = NULL;
     BIO *in = NULL, *out = NULL, *err = NULL;
+    ENGINE *engine = NULL;
 
     init_crypto();
 
     while (1) {
-        char c = getopt_long(argc, argv, "dehi:k:o:p:r:v",
+        char c = getopt_long(argc, argv, "deE:hi:k:o:p:r:v",
                              options, &long_optind);
         if (c == -1)
             break;
@@ -57,6 +60,8 @@ int main(int argc, char **argv)
             case 'd':
                 decrypt = 1;
                 break;
+            case 'E':
+                opt_engine = optarg;
                 break;
             case 'e':
                 encrypt = 1;
@@ -97,8 +102,14 @@ int main(int argc, char **argv)
     }
 
     err = BIO_new_fp(stderr, BIO_NOCLOSE);
+    if(opt_engine) {
+        engine = load_engine(err, opt_engine, verbose);
+    }
+
     if(opt_key) {
-        key = load_key(NULL, opt_key, NULL);
+        if((key = load_key(NULL, opt_key, engine)) == NULL) {
+            goto end;
+        }
     }
 
     if(opt_input) {
