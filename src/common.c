@@ -109,6 +109,52 @@ X509 *load_x509(BIO *err, const char *file)
 }
 
 EVP_PKEY *load_key(BIO *err, const char *file, ENGINE *e)
+ENGINE *load_engine(BIO *err, const char *engine, int debug)
+{
+    ENGINE *e = NULL;
+
+    if (engine) {
+        ENGINE_load_builtin_engines();
+
+        /* Try internal engines first */
+        if ((e = ENGINE_by_id(engine)) == NULL) {
+            /* It failed clear errors and try with dynamic */
+            ERR_clear_error();
+            e = ENGINE_by_id("dynamic");
+            if (e) {
+                if (!ENGINE_ctrl_cmd_string(e, "SO_PATH", engine, 0)
+                    || !ENGINE_ctrl_cmd_string(e, "LOAD", NULL, 0)) {
+                    ENGINE_free(e);
+                    e = NULL;
+                }
+            }
+        }
+        if(e == NULL) {
+            BIO_printf(err, "invalid engine \"%s\"\n", engine);
+            ERR_print_errors(err);
+            return NULL;
+        }
+        if (debug) {
+            ENGINE_ctrl(e, ENGINE_CTRL_SET_LOGSTREAM, 0, err, 0);
+        }
+        if (!ENGINE_set_default(e, ENGINE_METHOD_ALL)) {
+            if(err) {
+                BIO_printf(err, "can't use that engine\n");
+                ERR_print_errors(err);
+            }
+            ENGINE_free(e);
+            return NULL;
+        }
+
+        if(err && debug) {
+            BIO_printf(err, "engine \"%s\" set.\n", ENGINE_get_id(e));
+        }
+
+        ENGINE_free(e);
+    }
+    return e;
+}
+
 {
     BIO *key = NULL;
     EVP_PKEY *pkey = NULL;

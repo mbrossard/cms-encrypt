@@ -24,6 +24,7 @@ void print_usage_and_die(const char *name, const struct option *opts, const char
 unsigned int read_length(BIO *in);
 
 X509 *load_x509(BIO *err, const char *file);
+ENGINE *load_engine(BIO *err, const char *engine, int debug);
 EVP_PKEY *load_key(BIO *err, const char *file, ENGINE *e);
 
 #ifdef __cplusplus
