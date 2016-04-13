@@ -54,19 +54,20 @@ int decrypt_cms(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key)
     int ret = 1;
     CMS_ContentInfo *cms;
     char header[21];
-    const char enveloped_header[21] = {
+    const unsigned char enveloped_header[19] = {
         0x30, 0x80, /* SEQUENCE (Indefinite Length) */
         0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x07, 0x03,
         /* OBJECT IDENTIFIER envelopedData (1 2 840 113549 1 7 3) */
         0xA0, 0x80, /* [0] (Indefinite Length) */
         0x30, 0x80, /* SEQUENCE (Indefinite Length) */
-        0x02, 0x01, 0x03, /* INTEGER 3 */
-        0x31  /* SET (Length not read) */
+        0x02, 0x01, /* INTEGER x (x can be 0 or 3) */
     };
     if(BIO_read(in, header, sizeof(header)) != sizeof(header)) {
         goto end;
     }
-    if(memcmp(header, enveloped_header, sizeof(header)) != 0) {
+    if((memcmp(header, enveloped_header, sizeof(enveloped_header)) != 0)
+       || (header[19] != 0x00 && header[19] != 0x02 && header[19] != 0x03)
+       || (header[20] != 0x31)  /* SET (Length not read) */) {
         goto end;
     }
     
