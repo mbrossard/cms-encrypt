@@ -105,7 +105,7 @@ int decrypt_cms(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key)
     }
     
     CMS_EncryptedContentInfo *ec = cms->d.envelopedData->encryptedContentInfo;
-    const char encrypted_content_info[13] = {
+    const unsigned char encrypted_content_info[13] = {
         0x30, 0x80, /* SEQUENCE (Indefinite Length) */
         0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x07, 0x01
         /* OBJECT IDENTIFIER data (1 2 840 113549 1 7 1) */
