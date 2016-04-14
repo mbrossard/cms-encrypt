@@ -46,11 +46,16 @@ test: cmse
 	if ! [ -f rsa2.pem -a -f crt2.pem ] ; then \
 		@OPENSSL_BIN@ req -new -x509 -newkey rsa:1024 -keyout rsa2.pem -out crt2.pem -subj /CN=Bar -set_serial 2 -nodes ; \
 	fi
+#	Encrypt single certificate
 	./cmse -e -i $(CLEAR) -o test.enc -r crt1.pem
+#	Decrypt back
 	./cmse -d -i test.enc -o test.dec -r crt1.pem -k rsa1.pem
 	cmp $(CLEAR) test.dec
+#	Encrypt two certificates and one password
 	./cmse -e -i $(CLEAR) -o test.enc -r crt1.pem -r crt2.pem -p $(PWD)
+#	Decrypt back with key/certificate
 	./cmse -d -i test.enc -o test.dec -r crt1.pem -k rsa1.pem
 	cmp $(CLEAR) test.dec
+#	Decrypt back with password
 	./cmse -d -i test.enc -o test.dec -p $(PWD)
 	cmp $(CLEAR) test.dec
