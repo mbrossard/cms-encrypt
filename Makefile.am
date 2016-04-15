@@ -46,6 +46,10 @@ test: cmse
 	if ! [ -f rsa2.pem -a -f crt2.pem ] ; then \
 		@OPENSSL_BIN@ req -new -x509 -newkey rsa:1024 -keyout rsa2.pem -out crt2.pem -subj /CN=Bar -set_serial 2 -nodes ; \
 	fi
+	if ! [ -f ec.key -a -f ec.crt ] ; then \
+		@OPENSSL_BIN@ ecparam -genkey -name prime256v1 -noout  > ec.key ; \
+		@OPENSSL_BIN@ req -new -x509 -subj /CN=Baz -set_serial 3 -key ec.key -nodes -out ec.crt ; \
+	fi
 #	Encrypt single certificate
 	./cmse -e -i $(CLEAR) -o test.enc -r crt1.pem
 #	Decrypt back
