@@ -60,6 +60,9 @@ test: cmse
 #	Decrypt back with key/certificate
 	./cmse -d -i test.enc -o test.dec -r crt1.pem -k rsa1.pem
 	cmp $(CLEAR) test.dec
+#	Decrypt back with key/certificate using stdin/stdout
+	./cmse -d -r crt2.pem -k rsa2.pem < test.enc > test.dec
+	cmp $(CLEAR) test.dec
 #	Decrypt back with password
 	./cmse -d -i test.enc -o test.dec -p $(PWD)
 	cmp $(CLEAR) test.dec
