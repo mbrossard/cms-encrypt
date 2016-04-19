@@ -152,7 +152,7 @@ int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKE
     return ret;
 }
 
-int decrypt_cms_legacy(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key)
+int decrypt_cms_legacy(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKEY *key)
 {
     int flags = CMS_PARTIAL | CMS_STREAM | CMS_BINARY, ret = 1;
     CMS_ContentInfo *cms;
