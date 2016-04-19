@@ -135,7 +135,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "You must specify either --password/-p or --recipient/-r and --key/-k\n");
             goto end;
         }
-        ret = decrypt_cms(in, out, opt_password, x509, key);
+        ret = decrypt_cms(in, out, err, opt_password, x509, key);
     }
 
  end:

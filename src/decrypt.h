@@ -13,8 +13,8 @@
 extern "C" {
 #endif
 
-int decrypt_cms(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key);
-int decrypt_cms_legacy(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key);
+int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKEY *key);
+int decrypt_cms_legacy(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKEY *key);
 
 #ifdef __cplusplus
 };

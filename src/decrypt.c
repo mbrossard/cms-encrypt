@@ -49,7 +49,7 @@ X509_ALGOR *d2i_X509_ALGOR_bio(BIO *bp, X509_ALGOR **x509_a)
 
 BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec);
 
-int decrypt_cms(BIO *in, BIO *out, char *password, X509 *x509, EVP_PKEY *key)
+int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKEY *key)
 {
     int ret = 1;
     CMS_ContentInfo *cms;
