@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-int encrypt_cms(BIO *in, BIO *out, char *password, STACK_OF(X509) *crts);
+int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crts);
 
 #ifdef __cplusplus
 };

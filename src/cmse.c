@@ -129,7 +129,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "You must specify at least one of --password/-p or --recipient/-r\n");
             goto end;
         }
-        ret = encrypt_cms(in, out, opt_password, crts);
+        ret = encrypt_cms(in, out, err, opt_password, crts);
     } else if(decrypt) {
         if(opt_password == NULL && (opt_key == NULL || sk_X509_num(crts) == 0)) {
             fprintf(stderr, "You must specify either --password/-p or --recipient/-r and --key/-k\n");

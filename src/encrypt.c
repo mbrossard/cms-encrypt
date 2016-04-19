@@ -4,7 +4,7 @@
 
 #define PKCS5_ITERATIONS 4096
 
-int encrypt_cms(BIO *in, BIO *out, char *password, STACK_OF(X509) *crts)
+int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crts)
 {
     int flags = CMS_PARTIAL | CMS_STREAM | CMS_BINARY, ret = 1;
     const EVP_CIPHER *cipher = EVP_aes_256_cbc();
