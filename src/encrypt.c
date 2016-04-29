@@ -1,6 +1,7 @@
 #include "encrypt.h"
 
 #include <openssl/cms.h>
+#include <openssl/err.h>
 
 #define PKCS5_ITERATIONS 4096
 
@@ -17,6 +18,7 @@ int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crt
             X509 *x = sk_X509_value(crts, i);
             ri = CMS_add1_recipient_cert(cms, x, flags);
             if (!ri) {
+                ERR_print_errors(err);
                 goto end;
             }
         }
@@ -26,11 +28,13 @@ int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crt
         unsigned char *tmp = (unsigned char *)BUF_strdup((char *)password);
         if (tmp == NULL || CMS_add0_recipient_password(cms, PKCS5_ITERATIONS, NID_id_alg_PWRI_KEK,
                                                        NID_id_pbkdf2, tmp, -1, wrap) == 0) {
+            ERR_print_errors(err);
             goto end;
         }
     }
 
     if(i2d_CMS_bio_stream(out, cms, in, flags) <= 0) {
+        ERR_print_errors(err);
         goto end;
     }
 
