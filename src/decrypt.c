@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <openssl/cms.h>
+#include <openssl/err.h>
 #include <openssl/asn1t.h>
 
 DECLARE_ASN1_ITEM(CMS_RecipientInfo)
@@ -87,12 +88,14 @@ int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKE
                 goto end;
             }
         } else {
+            ERR_print_errors(err);
             goto end;
         }
     } while(BIO_number_read(in) < i);
     
     if(key && x509) {
         if (!CMS_decrypt_set1_pkey(cms, key, x509)) {
+            ERR_print_errors(err);
             goto end;
         }
     }
@@ -100,10 +103,11 @@ int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKE
     if (password) {
         unsigned char *tmp = (unsigned char *)BUF_strdup((char *)password);
         if (!CMS_decrypt_set1_password(cms, tmp, -1)) {
+            ERR_print_errors(err);
             goto end;
         }
     }
-    
+
     CMS_EncryptedContentInfo *ec = cms->d.envelopedData->encryptedContentInfo;
     const unsigned char encrypted_content_info[13] = {
         0x30, 0x80, /* SEQUENCE (Indefinite Length) */
@@ -162,17 +166,20 @@ int decrypt_cms_legacy(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, 
     if (password) {
         unsigned char *tmp = (unsigned char *)BUF_strdup((char *)password);
         if (!CMS_decrypt_set1_password(cms, tmp, -1)) {
+            ERR_print_errors(err);
             goto end;
         }
     } else {
         if(key && x509) {
             if (!CMS_decrypt_set1_pkey(cms, key, x509)) {
+                ERR_print_errors(err);
                 goto end;
             }
         }
     }
 
     if (!CMS_decrypt(cms, NULL, NULL, NULL, out, flags)) {
+        ERR_print_errors(err);
         goto end;
     }
     ret = 0;
