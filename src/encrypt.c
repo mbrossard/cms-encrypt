@@ -3,7 +3,7 @@
 #include <openssl/cms.h>
 #include <openssl/err.h>
 
-#define PKCS5_ITERATIONS 4096
+#define PKCS5_ITERATIONS 16384
 
 int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crts)
 {
