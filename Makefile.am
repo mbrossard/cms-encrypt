@@ -66,3 +66,5 @@ test: cmse
 #	Decrypt back with password
 	./cmse -d -i test.enc -o test.dec -p $(PWD)
 	cmp $(CLEAR) test.dec
+#	Encrypt two certificates (RSA and EC)
+	./cmse -e -i $(CLEAR) -o test.enc -r crt1.pem -r ec.crt -p $(PWD)
