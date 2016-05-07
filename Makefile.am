@@ -68,3 +68,6 @@ test: cmse
 	cmp $(CLEAR) test.dec
 #	Encrypt two certificates (RSA and EC)
 	./cmse -e -i $(CLEAR) -o test.enc -r crt1.pem -r ec.crt -p $(PWD)
+#	Decrypt back with EC key/certificate
+	./cmse -d -i test.enc -o test.dec -r ec.crt -k ec.key
+	cmp $(CLEAR) test.dec
