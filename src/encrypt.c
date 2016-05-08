@@ -29,6 +29,7 @@ int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crt
         unsigned char *tmp = (unsigned char *)BUF_strdup((char *)password);
         if (tmp == NULL || CMS_add0_recipient_password(cms, PKCS5_ITERATIONS, NID_id_alg_PWRI_KEK,
                                                        NID_id_pbkdf2, tmp, -1, wrap) == 0) {
+            fprintf(stderr, "Error adding password recipient\n");
             ERR_print_errors(err);
             goto end;
         }
