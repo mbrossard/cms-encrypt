@@ -36,6 +36,7 @@ int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crt
     }
 
     if(i2d_CMS_bio_stream(out, cms, in, flags) <= 0) {
+        fprintf(stderr, "Error encrypting content\n");
         ERR_print_errors(err);
         goto end;
     }
