@@ -69,6 +69,7 @@ int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKE
     if((memcmp(header, enveloped_header, sizeof(enveloped_header)) != 0)
        || (header[19] != 0x00 && header[19] != 0x02 && header[19] != 0x03)
        || (header[20] != 0x31)  /* SET (Length not read) */) {
+        fprintf(stderr, "Unexpected file format\n");
         goto end;
     }
     
@@ -119,6 +120,7 @@ int decrypt_cms(BIO *in, BIO *out, BIO *err, char *password, X509 *x509, EVP_PKE
         goto end;
     }
     if(memcmp(header, encrypted_content_info, 13) != 0) {
+        fprintf(stderr, "Unexpected file format\n");
         goto end;
     }
 
