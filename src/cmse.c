@@ -107,6 +107,10 @@ int main(int argc, char **argv)
     }
 
     err = BIO_new_fp(stderr, BIO_NOCLOSE);
+    if(err == NULL) {
+        fprintf(stderr, "Error allocating error stream\n");
+    }
+
     if(opt_engine) {
         engine = load_engine(err, opt_engine, verbose);
     }
