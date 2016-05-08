@@ -117,6 +117,7 @@ int main(int argc, char **argv)
 
     if(opt_key) {
         if((key = load_key(NULL, opt_key, engine)) == NULL) {
+            fprintf(stderr, "Error loading key '%s'\n", opt_key);
             goto end;
         }
     }
