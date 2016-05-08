@@ -18,6 +18,7 @@ int encrypt_cms(BIO *in, BIO *out, BIO *err, char *password, STACK_OF(X509) *crt
             X509 *x = sk_X509_value(crts, i);
             ri = CMS_add1_recipient_cert(cms, x, flags);
             if (!ri) {
+                fprintf(stderr, "Error adding certificate recipient\n");
                 ERR_print_errors(err);
                 goto end;
             }
