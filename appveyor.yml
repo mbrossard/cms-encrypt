@@ -43,7 +43,7 @@ install:
         } Else {
             $env:OPENSSL_PLATFORM="Win64"
         }
-        Start-FileDownload https://slproweb.com/download/Win32OpenSSL-${env:OPENSSL_VERSION}.exe -FileName C:\WinOpenSSL.exe
+        Start-FileDownload https://slproweb.com/download/${env:OPENSSL_PLATFORM}OpenSSL-${env:OPENSSL_VERSION}.exe -FileName C:\WinOpenSSL.exe
     - C:\WinOpenSSL.exe /SILENT /VERYSILENT /SP- /SUPPRESSMSGBOXES /NORESTART
 
 build_script:
