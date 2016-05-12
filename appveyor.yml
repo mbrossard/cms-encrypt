@@ -48,7 +48,9 @@ install:
 
 build_script:
     - cmd: if %PLATFORM%==x86 SET OPENSSL_PLATFORM=Win32
+    - cmd: if %PLATFORM%==x86 SET OPENSSL_BITS=32
     - cmd: if %PLATFORM%==x64 SET OPENSSL_PLATFORM=Win64
+    - cmd: if %PLATFORM%==x64 SET OPENSSL_BITS=64
     - cmd: 'echo Cygwin root is: %CYG_ROOT%'
     - cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
     - cmd: 'echo Repo build branch is: %APPVEYOR_REPO_BRANCH%'
@@ -61,8 +63,11 @@ build_script:
     - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; autoreconf -i"'
     - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; CFLAGS=\"-D_GNU_SOURCE -D_cdecl=__cdecl -Doff_t=_off_t -Doff64_t=_off64_t\" ./configure  --with-openssl=C:/OpenSSL-%OPENSSL_PLATFORM%"'
     - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; cat config.log"'
-    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ls -lr C:/OpenSSL-%OPENSSL_PLATFORM%"'
-    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; make V=1"'
+    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ls -lR C:/OpenSSL-%OPENSSL_PLATFORM%"'
+    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ls -lR C:/OpenSSL-%OPENSSL_PLATFORM%/lib"'
+    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ls -lR C:/OpenSSL-*"'
+    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ls -lR C:/OpenSSL-*/lib"'
+    - cmd: '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; make V=1 OPENSSL_LIBS=\"-lssl%OPENSSL_BITS% -leay%OPENSSL_BITS%\""'
     - cmd: 'echo Installation'
     - cmd: 'mkdir %APPVEYOR_BUILD_FOLDER%\dist'
     - cmd: '%CYG_ROOT%/bin/bash -lc "export CYGWIN=winsymlinks:native; mount \"$APPVEYOR_BUILD_FOLDER\dist\" /usr/local; cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make install; umount /usr/local"'
