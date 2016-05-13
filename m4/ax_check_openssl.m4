@@ -78,8 +78,13 @@ AC_DEFUN([AX_CHECK_OPENSSL], [
             AC_MSG_CHECKING([for openssl/ssl.h in $ssldir])
             if test -f "$ssldir/include/openssl/ssl.h"; then
                 OPENSSL_INCLUDES="-I$ssldir/include"
-                OPENSSL_LDFLAGS="-L$ssldir/lib"
-                OPENSSL_LIBS="-lssl -lcrypto"
+                if test -f "$ssldir/lib/MingW/ssleay32.a"; then
+                    OPENSSL_LDFLAGS="-L$ssldir/lib/MingW"
+                    OPENSSL_LIBS="$ssldir/lib/MingW/ssleay32.a $ssldir/lib/MingW/libeay32.a"
+                else
+                    OPENSSL_LDFLAGS="-L$ssldir/lib"
+                    OPENSSL_LIBS="-lssl -lcrypto"
+                fi
                 found=true
                 AC_MSG_RESULT([yes])
                 break
