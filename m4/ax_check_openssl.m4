@@ -80,7 +80,7 @@ AC_DEFUN([AX_CHECK_OPENSSL], [
                 OPENSSL_INCLUDES="-I$ssldir/include"
                 if test -f "$ssldir/lib/MingW/ssleay32.a"; then
                     OPENSSL_LDFLAGS="-L$ssldir/lib/MingW"
-                    OPENSSL_LIBS="$ssldir/lib/MingW/ssleay32.a $ssldir/lib/MingW/libeay32.a"
+                    OPENSSL_LIBS="-leay32 -lssleay32"
                 else
                     OPENSSL_LDFLAGS="-L$ssldir/lib"
                     OPENSSL_LIBS="-lssl -lcrypto"
