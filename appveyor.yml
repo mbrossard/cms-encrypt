@@ -48,9 +48,7 @@ install:
 
 build_script:
     - cmd: if %PLATFORM%==x86 SET OPENSSL_PLATFORM=Win32
-    - cmd: if %PLATFORM%==x86 SET OPENSSL_BITS=32
     - cmd: if %PLATFORM%==x64 SET OPENSSL_PLATFORM=Win64
-    - cmd: if %PLATFORM%==x64 SET OPENSSL_BITS=64
     - cmd: 'echo Cygwin root is: %CYG_ROOT%'
     - cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
     - cmd: 'echo Repo build branch is: %APPVEYOR_REPO_BRANCH%'
