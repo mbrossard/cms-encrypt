@@ -1,5 +1,4 @@
 language: c
-dist: trusty
 sudo: false
 
 branches:
@@ -10,8 +9,6 @@ cache: apt
 
 matrix:
   include:
-  - os: linux
-    compiler: gcc
   - os: osx
     compiler: clang
     osx_image: xcode8.3
@@ -22,6 +19,5 @@ before_install:
 script:
   - autoreconf -i
   - if [ $TRAVIS_OS_NAME == osx ] ; then ./configure --with-openssl=/usr/local/Cellar/openssl/* ; fi
-  - if [ $TRAVIS_OS_NAME == linux ] ; then ./configure ; fi
   - make V=1
   - make test
